@@ -1,0 +1,25 @@
+name: Commit diario automático
+
+on:
+  schedule:
+    - cron: '0 16 * * *'  # Todos los días a las 4 PM UTC (11 AM Perú)
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repo
+        uses: actions/checkout@v3
+
+      - name: Cambiar archivo
+        run: |
+          echo "🕒 Último commit: $(date)" > actividad.txt
+
+      - name: Subir cambios
+        run: |
+          git config --global user.email "mathias205@users.noreply.github.com"
+          git config --global user.name "Mathias205"
+          git add actividad.txt
+          git commit -m "🤖 Commit automático: $(date)" || echo "Sin cambios"
+          git push
